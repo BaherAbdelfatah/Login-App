@@ -1,21 +1,6 @@
-/*
- * Copyright 2019, The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.example.android.firebaseui_login_sample
 
+import FirebaseUserLiveData
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
@@ -51,6 +36,7 @@ class LoginViewModel : ViewModel() {
             AuthenticationState.UNAUTHENTICATED
         }
     }
+
     /**
      * Gets a fact to display based on the user's set preference of which type of fact they want
      * to see (Android fact or California fact). If there is no logged in user or if the user has
@@ -62,6 +48,13 @@ class LoginViewModel : ViewModel() {
         val defaultFactType = context.resources.getStringArray(R.array.fact_type)[0]
         val funFactType = sharedPreferences.getString(factTypePreferenceKey, defaultFactType)
 
-        return androidFacts[Random.nextInt(0, androidFacts.size)]
+        if (authenticationState == AuthenticationState.UNAUTHENTICATED || funFactType.equals(
+                context.getString(R.string.fact_type_android)
+            )
+        ) {
+            return androidFacts[Random.nextInt(0, androidFacts.size)]
+        } else {
+            return californiaFacts[Random.nextInt(0, californiaFacts.size)]
+        }
     }
 }
