@@ -88,16 +88,33 @@ class MainFragment : Fragment() {
     private fun observeAuthenticationState() {
         val factToDisplay = viewModel.getFactToDisplay(requireContext())
 
-        // TODO Use the authenticationState variable from LoginViewModel to update the UI
-        //  accordingly.
-        //
-        //  TODO If there is a logged-in user, authButton should display Logout. If the
-        //   user is logged in, you can customize the welcome message by utilizing
-        //   getFactWithPersonalition(). I
+        viewModel.authenticationState.observe(viewLifecycleOwner, Observer { authenticationState ->
+            // TODO 1. Use the authenticationState variable you just added
+            // in LoginViewModel and change the UI accordingly.
+            when (authenticationState) {
+                // TODO 2.  If the user is logged in,
+                // you can customize the welcome message they see by
+                // utilizing the getFactWithPersonalization() function provided
+                LoginViewModel.AuthenticationState.AUTHENTICATED -> {
+                    binding.welcomeText.text = getFactWithPersonalization(factToDisplay)
+                    binding.authButton.text = getString(R.string.logout_button_text)
+                    binding.authButton.setOnClickListener {
+                        AuthUI.getInstance().signOut(requireContext())
+                    }
+                }
+                else -> {
+                    // TODO 3. Lastly, if there is no logged-in user,
+                    // auth_button should display Login and
+                    // launch the sign in screen when clicked.
+                    binding.welcomeText.text = factToDisplay
 
-        // TODO If there is no logged in user, authButton should display Login and launch the sign
-        //  in screen when clicked. There should also be no personalization of the message
-        //  displayed.
+                    binding.authButton.text = getString(R.string.login_button_text)
+                    binding.authButton.setOnClickListener {
+                        launchSignInFlow()
+                    }
+                }
+            }
+        })
     }
 
 
