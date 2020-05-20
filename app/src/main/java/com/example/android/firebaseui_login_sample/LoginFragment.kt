@@ -55,22 +55,19 @@ class LoginFragment : Fragment() {
             navController.popBackStack(R.id.mainFragment, false)
         }
 
-        // Observe the authentication state so we can know if the user has logged in successfully.
-        // If the user has logged in successfully, bring them back to the home screen.
-        // If the user did not log in successfully, display an error message.
+// Observe the authentication state so we can know if the user has logged in successfully.
+// If the user has logged in successfully, bring them back to the settings screen.
+// If the user did not log in successfully, display an error message.
         viewModel.authenticationState.observe(viewLifecycleOwner, Observer { authenticationState ->
             when (authenticationState) {
                 LoginViewModel.AuthenticationState.AUTHENTICATED -> navController.popBackStack()
-                LoginViewModel.AuthenticationState.INVALID_AUTHENTICATION -> Snackbar.make(
-                    view, requireActivity().getString(R.string.login_unsuccessful_msg),
-                    Snackbar.LENGTH_LONG
-                ).show()
                 else -> Log.e(
                     TAG,
                     "Authentication state that doesn't require any UI change $authenticationState"
                 )
             }
         })
+
     }
 
     private fun launchSignInFlow() {
